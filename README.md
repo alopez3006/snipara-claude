@@ -111,12 +111,12 @@ The plugin includes model-invoked skills that Claude uses automatically:
 ### Commands (Manual)
 
 #### Quick Workflows
-- `/snipara:lite [task]` - Start LITE mode (quick bug fixes, <5 files)
-- `/snipara:full [task]` - Start FULL mode (complex features, 5+ files)
+- `/snipara:lite-mode [task]` - Start LITE mode (quick bug fixes, <5 files)
+- `/snipara:full-mode [task]` - Start FULL mode (complex features, 5+ files)
 
 #### Documentation
 - `/snipara:search [pattern]` - Search docs with regex
-- `/snipara:team [query]` - Search across ALL team projects
+- `/snipara:team-search [query]` - Search across ALL team projects
 
 #### Memory
 - `/snipara:remember [content]` - Save important context
@@ -142,7 +142,7 @@ The plugin includes model-invoked skills that Claude uses automatically:
 
 ```bash
 User: Fix the authentication timeout bug
-You: /snipara:lite authentication timeout
+You: /snipara:lite-mode authentication timeout
 # Queries context (4K tokens) → Reads files → Fixes → Tests
 ```
 
@@ -150,7 +150,7 @@ You: /snipara:lite authentication timeout
 
 ```bash
 User: Implement OAuth integration
-You: /snipara:full OAuth integration
+You: /snipara:full-mode OAuth integration
 
 # Phase 1: Context & Planning
 - Loads team standards from rlm_shared_context

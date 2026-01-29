@@ -1,0 +1,92 @@
+# Snipara Plugin Commands Quick Reference
+
+All commands are prefixed with `/snipara:` namespace.
+
+## Available Commands
+
+### Workflow Commands
+- `/snipara:lite-mode [task]` - Quick bug fixes and small features
+- `/snipara:full-mode [task]` - Complex features with full 6-phase workflow
+
+### Memory Commands
+- `/snipara:remember [content]` - Save important context or decisions
+- `/snipara:recall [query]` - Search saved memories
+
+### Documentation Commands
+- `/snipara:search [pattern]` - Search docs with regex pattern
+- `/snipara:team-search [query]` - Search across all team projects
+
+### Planning Commands
+- `/snipara:plan [task]` - Generate execution plan
+- `/snipara:decompose [task]` - Break task into sub-tasks
+
+### Context Commands
+- `/snipara:inject [context]` - Set session context
+- `/snipara:shared` - Get team coding standards
+
+### RLM Runtime Commands (Optional)
+- `/snipara:run [task]` - Execute with RLM Runtime (local)
+- `/snipara:docker [task]` - Execute with Docker isolation
+- `/snipara:visualize` - Launch trajectory dashboard
+- `/snipara:logs` - View execution logs
+
+## Command vs Filename Mapping
+
+| Command | Filename |
+|---------|----------|
+| `/snipara:lite-mode` | `commands/lite-mode.md` |
+| `/snipara:full-mode` | `commands/full-mode.md` |
+| `/snipara:remember` | `commands/remember.md` |
+| `/snipara:recall` | `commands/recall.md` |
+| `/snipara:search` | `commands/search.md` |
+| `/snipara:team-search` | `commands/team-search.md` |
+| `/snipara:inject` | `commands/inject.md` |
+| `/snipara:plan` | `commands/plan.md` |
+| `/snipara:decompose` | `commands/decompose.md` |
+| `/snipara:shared` | `commands/shared.md` |
+| `/snipara:run` | `commands/run.md` |
+| `/snipara:docker` | `commands/docker.md` |
+| `/snipara:visualize` | `commands/visualize.md` |
+| `/snipara:logs` | `commands/logs.md` |
+
+## Usage Examples
+
+### Start LITE workflow
+```
+/snipara:lite-mode Fix authentication timeout bug
+```
+
+### Start FULL workflow
+```
+/snipara:full-mode Implement OAuth 2.0 integration
+```
+
+### Save a decision to memory
+```
+/snipara:remember type=decision "Using Redis for rate limiting"
+```
+
+### Search memories
+```
+/snipara:recall Redis rate limiting
+```
+
+### Search documentation
+```
+/snipara:search authentication.*jwt
+```
+
+### Get team standards
+```
+/snipara:shared
+```
+
+## Testing Commands
+
+After loading the plugin with `claude --plugin-dir .`, verify commands are available:
+
+```
+/help
+```
+
+Look for the "snipara:" section showing all 14 commands.

@@ -23,12 +23,12 @@ Run this first to see all available commands:
 ```
 
 Expected: You should see 14 commands under "snipara:" namespace:
-- `/snipara:lite`
-- `/snipara:full`
+- `/snipara:lite-mode`
+- `/snipara:full-mode`
 - `/snipara:remember`
 - `/snipara:recall`
 - `/snipara:search`
-- `/snipara:team`
+- `/snipara:team-search`
 - `/snipara:inject`
 - `/snipara:plan`
 - `/snipara:decompose`
@@ -42,14 +42,14 @@ Expected: You should see 14 commands under "snipara:" namespace:
 
 #### Test LITE Mode
 ```
-/snipara:lite authentication bug fix
+/snipara:lite-mode authentication bug fix
 ```
 
 Expected: Claude should query Snipara context and start a lightweight workflow.
 
 #### Test FULL Mode
 ```
-/snipara:full OAuth integration
+/snipara:full-mode OAuth integration
 ```
 
 Expected: Claude should start a comprehensive 6-phase workflow with planning.
@@ -176,12 +176,12 @@ Use this template to document your test results:
 - [ ] Plugin metadata correct (name: snipara, version: 1.0.0)
 
 ### Commands
-- [ ] `/snipara:lite` works
-- [ ] `/snipara:full` works
+- [ ] `/snipara:lite-mode` works
+- [ ] `/snipara:full-mode` works
 - [ ] `/snipara:remember` works
 - [ ] `/snipara:recall` works
 - [ ] `/snipara:search` works
-- [ ] `/snipara:team` works (requires TEAM plan)
+- [ ] `/snipara:team-search` works (requires TEAM plan)
 - [ ] `/snipara:inject` works
 - [ ] `/snipara:plan` works
 - [ ] `/snipara:decompose` works
