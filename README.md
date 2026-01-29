@@ -12,6 +12,26 @@ Optimizes documentation context for LLMs, reducing 500K tokens to ~5K tokens of 
 ### 2. **RLM Runtime** - Safe Code Execution
 Execute real code recursively with Docker isolation. RLM (Recursive Language Models) can inspect context, decompose tasks, run code, and compose results - all with full trajectory logging.
 
+## Works With Your Existing LLM Account
+
+Snipara is a **context optimization layer** - it does NOT run an LLM. It works alongside your existing AI subscription:
+
+| Your Account | How It Works |
+|---|---|
+| **Claude Pro / Max** | Claude Code already has LLM access. Snipara provides optimized context to Claude via MCP. Just authenticate with Snipara and go. |
+| **Any MCP-Compatible Client** | Cursor, Windsurf, or any client that supports MCP servers. |
+| **RLM Runtime (optional)** | Use your own OpenAI or Anthropic API key for isolated code execution. Snipara provides the context separately. |
+
+**If you use Claude Code with a Pro or Max account**, you already have full LLM access built in. Just authenticate with Snipara (API key or OAuth) and start querying. No additional API keys needed.
+
+```
+┌──────────────────────┐     ┌──────────────────────┐     ┌──────────────────┐
+│  Your Documentation  │────>│  Snipara             │────>│  Your LLM        │
+│  (500K+ tokens)      │     │  (Optimizes to ~5K)  │     │  (Claude/GPT/etc)│
+└──────────────────────┘     └──────────────────────┘     └──────────────────┘
+                              Context Optimization         Your account / key
+```
+
 ## Features
 
 ### Snipara Features
@@ -39,7 +59,7 @@ Execute real code recursively with Docker isolation. RLM (Recursive Language Mod
 
 1. **Claude Code** installed (v1.0.33+)
 2. **Snipara account** at [snipara.com](https://snipara.com)
-3. **Snipara API key** from dashboard
+3. **Authentication** - Either an API key from dashboard OR OAuth (see [Authentication](#authentication) below)
 4. **Docker** installed and running (for RLM Runtime isolation)
 5. **Python 3.9+** (for RLM Runtime)
 
@@ -52,7 +72,9 @@ Execute real code recursively with Docker isolation. RLM (Recursive Language Mod
 
 ### Step 2: Configure Snipara MCP
 
-Add to your project's `.mcp.json`:
+Add to your project's `.mcp.json` using **either** an API key or an OAuth token:
+
+**Option A: API Key (quickest)**
 
 ```json
 {
@@ -69,6 +91,24 @@ Add to your project's `.mcp.json`:
 ```
 
 Get your API key from: [snipara.com/dashboard](https://snipara.com/dashboard)
+
+**Option B: OAuth Token (browser-based login)**
+
+```json
+{
+  "mcpServers": {
+    "snipara": {
+      "type": "http",
+      "url": "https://api.snipara.com/mcp/<your-project-slug>",
+      "headers": {
+        "Authorization": "Bearer <your-oauth-token>"
+      }
+    }
+  }
+}
+```
+
+Get your OAuth token via the device flow - see [Authentication](#authentication) below.
 
 ### Step 3: Install RLM Runtime (Optional)
 
@@ -87,6 +127,8 @@ rlm run --env docker "print('Hello from RLM')"
 ```
 
 ### Step 4: Configure LLM API Keys (For RLM Runtime)
+
+> **Note:** If you're using Claude Code with a Claude Pro or Max account, you already have LLM access built in. These API keys are only needed if you use the optional RLM Runtime feature for isolated code execution.
 
 ```bash
 # For Anthropic (Claude)
@@ -187,6 +229,142 @@ You: /snipara:remember type=context "Completed registration API, next: email ver
 You: /snipara:recall email verification progress
 # Continues where you left off
 ```
+
+## Authentication
+
+> For the full authentication reference including OAuth device flow details, token management, LLM provider compatibility, and troubleshooting, see [docs/AUTHENTICATION.md](docs/AUTHENTICATION.md).
+
+Snipara supports two authentication methods. Both give you full access to context optimization features.
+
+### Method 1: API Key
+
+The simplest method. Generate a key from your dashboard and add it to `.mcp.json`.
+
+1. Sign in at [snipara.com](https://snipara.com)
+2. Go to **Project > API Keys**
+3. Click **"Generate Key"**
+4. Copy the key (format: `rlm_pk_...`)
+5. Add to `.mcp.json` as shown in [Step 2](#step-2-configure-snipara-mcp)
+
+**Key formats:**
+
+| Format | Scope |
+|---|---|
+| `rlm_pk_...` | Single project access |
+| `rlm_team_...` | All projects in a team |
+
+### Method 2: OAuth Device Flow
+
+Recommended for users who prefer browser-based login. This is especially convenient if you already have a Snipara account linked to GitHub or Google.
+
+**How it works:**
+
+```
+1. CLI requests a device code from Snipara
+2. You open snipara.com/device in your browser
+3. Enter the code and log in (GitHub, Google, or email)
+4. CLI receives an OAuth token automatically
+5. Token is saved and used for all MCP requests
+```
+
+**Step-by-step:**
+
+1. **Request a device code:**
+
+```bash
+curl -X POST https://snipara.com/api/oauth/device/code \
+  -H "Content-Type: application/json" \
+  -d '{"client_id": "snipara_cli"}'
+```
+
+Response:
+
+```json
+{
+  "device_code": "abc123...",
+  "user_code": "ABCD-1234",
+  "verification_uri": "https://snipara.com/device",
+  "verification_uri_complete": "https://snipara.com/device?code=ABCD-1234",
+  "expires_in": 900,
+  "interval": 5
+}
+```
+
+2. **Open the link and enter the code:**
+
+   Go to [snipara.com/device](https://snipara.com/device) and enter the code (e.g., `ABCD-1234`). Log in with GitHub, Google, or email.
+
+3. **Poll for the token:**
+
+```bash
+curl -X POST https://snipara.com/api/oauth/device/token \
+  -H "Content-Type: application/json" \
+  -d '{
+    "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
+    "device_code": "abc123...",
+    "client_id": "snipara_cli"
+  }'
+```
+
+Success response:
+
+```json
+{
+  "access_token": "snipara_at_...",
+  "token_type": "Bearer",
+  "expires_in": 2592000,
+  "refresh_token": "snipara_rt_..."
+}
+```
+
+4. **Use the token in `.mcp.json`:**
+
+```json
+{
+  "mcpServers": {
+    "snipara": {
+      "type": "http",
+      "url": "https://api.snipara.com/mcp/<your-project-slug>",
+      "headers": {
+        "Authorization": "Bearer snipara_at_..."
+      }
+    }
+  }
+}
+```
+
+**Token details:**
+
+| Token | Format | Validity |
+|---|---|---|
+| Access token | `snipara_at_...` | 30 days |
+| Refresh token | `snipara_rt_...` | 90 days |
+
+To refresh an expired access token:
+
+```bash
+curl -X POST https://snipara.com/api/oauth/token \
+  -H "Content-Type: application/json" \
+  -d '{
+    "grant_type": "refresh_token",
+    "refresh_token": "snipara_rt_..."
+  }'
+```
+
+### Using Snipara With Your LLM Account
+
+Snipara OAuth authenticates you to the **Snipara context optimization service**. It does not connect to OpenAI or other LLM providers. Your LLM access is separate:
+
+| Setup | Snipara Auth | LLM Access | What You Need |
+|---|---|---|---|
+| **Claude Code + Pro/Max** | API key or OAuth | Built into Claude Code | Snipara auth only |
+| **Cursor / Windsurf** | API key or OAuth | Built into IDE | Snipara auth only |
+| **RLM Runtime + Anthropic** | API key or OAuth | `ANTHROPIC_API_KEY` | Snipara auth + Anthropic API key |
+| **RLM Runtime + OpenAI** | API key or OAuth | `OPENAI_API_KEY` | Snipara auth + OpenAI API key |
+
+**Claude Pro / Max users:** You already have full LLM access through Claude Code. Just authenticate with Snipara (API key or OAuth) and start querying. No additional API keys needed.
+
+**RLM Runtime users:** If you use the optional RLM Runtime for isolated code execution, you need a separate LLM API key (`ANTHROPIC_API_KEY` or `OPENAI_API_KEY`) in addition to Snipara auth.
 
 ## Pricing
 
