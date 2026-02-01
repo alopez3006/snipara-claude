@@ -2,6 +2,24 @@
 
 > Context optimization + safe code execution - Query docs with 90% token reduction and execute code in Docker isolation
 
+## Quick Start (Free)
+
+**100 queries/month free, no credit card required.**
+
+```bash
+# 1. Install plugin
+/plugin marketplace add Snipara/snipara-claude
+
+# 2. Set up (creates free account automatically)
+/snipara:quickstart
+
+# 3. Sign in with GitHub in your browser — done!
+```
+
+That's it. Your `.mcp.json` is configured automatically. Start querying with `/snipara:lite-mode [your task]`.
+
+---
+
 ## What is This Plugin?
 
 This plugin integrates TWO powerful tools into Claude Code:
@@ -58,10 +76,10 @@ Snipara is a **context optimization layer** - it does NOT run an LLM. It works a
 ### Prerequisites
 
 1. **Claude Code** installed (v1.0.33+)
-2. **Snipara account** at [snipara.com](https://snipara.com)
-3. **Authentication** - Either an API key from dashboard OR OAuth (see [Authentication](#authentication) below)
-4. **Docker** installed and running (for RLM Runtime isolation)
-5. **Python 3.9+** (for RLM Runtime)
+2. **Docker** installed and running (optional, for RLM Runtime isolation)
+3. **Python 3.9+** (optional, for RLM Runtime)
+
+> **No Snipara account needed beforehand.** Running `/snipara:quickstart` creates a free account automatically (100 queries/month, no credit card).
 
 ### Step 1: Install Plugin
 
@@ -381,12 +399,14 @@ Snipara OAuth authenticates you to the **Snipara context optimization service**.
 
 ## Pricing
 
-Snipara offers multiple plans:
+| Plan | Price | Queries/month | Features |
+|------|-------|---------------|----------|
+| **FREE** | **$0** | **100** | Keyword search, token budgeting, session persistence |
+| PRO | $19/mo | 5,000 | + Semantic search, memory, planning |
+| TEAM | $49/mo | 20,000 | + Multi-project search, swarms, shared standards |
+| ENTERPRISE | $499/mo | Unlimited | + Custom deployment, SLA |
 
-- **FREE** - 100 queries/month (keyword search)
-- **PRO** - $19/mo, 5,000 queries/month (semantic search, memory, planning)
-- **TEAM** - $49/mo, 20,000 queries/month (multi-project, swarms)
-- **ENTERPRISE** - $499/mo, unlimited queries
+**No credit card required for FREE plan.** Upgrade anytime at [snipara.com/pricing](https://snipara.com/pricing).
 
 ## Support
 
